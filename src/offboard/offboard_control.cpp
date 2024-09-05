@@ -111,18 +111,18 @@ void OffboardControl::key_input() {
 			_prev_sp = sp;
 
 		}
-		else if(cmd == "traj") {
-			if(!_traj_present) {
-				std::cout << "Trajectory not loaded correctly!\n";
-				continue;
-			}
-			for(int i = 0; i<int(_traj_points.size()); i+=7) {
-				matrix::Vector3f sp(_traj_points[i], _traj_points[i+1], _traj_points[i+2]);
-				float yaw   = _traj_points[i+3];
-				double duration = _traj_points[i+4];
-				startTraj(sp, yaw, duration);
-			}
-		}
+		// else if(cmd == "traj") {
+		// 	if(!_traj_present) {
+		// 		std::cout << "Trajectory not loaded correctly!\n";
+		// 		continue;
+		// 	}
+		// 	for(int i = 0; i<int(_traj_points.size()); i+=7) {
+		// 		matrix::Vector3f sp(_traj_points[i], _traj_points[i+1], _traj_points[i+2]);
+		// 		float yaw   = _traj_points[i+3];
+		// 		double duration = _traj_points[i+4];
+		// 		startTraj(sp, yaw, duration);
+		// 	}
+		// }
 		else if(cmd == "takeoff") {
 			float alt;
 			std::cout << "Enter altitude: "; 
