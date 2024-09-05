@@ -6,7 +6,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # find dependencies
-# find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(eigen3_cmake_module REQUIRED)
@@ -15,6 +14,8 @@ find_package(geometry_msgs REQUIRED)
 find_package(px4_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(ompl REQUIRED)
+find_package(fcl REQUIRED)
 find_package(Boost REQUIRED COMPONENTS
 	system 
 	thread 
@@ -22,7 +23,11 @@ find_package(Boost REQUIRED COMPONENTS
 )
 find_package(tf2 REQUIRED)
 
-include_directories(include)
+include_directories(
+  include
+  /usr/local/include/ompl-1.6/
+  /usr/include/3dPathPlanner/
+)
 
 # Add frame_transforms lib
 add_library(frame_transforms SHARED src/lib/frame_transforms.cpp)
@@ -35,13 +40,13 @@ target_include_directories(frame_transforms PUBLIC
 
 # /offboard_control
 add_executable(offboard_control src/offboard/offboard_control.cpp src/offboard/Trajectory.cpp src/offboard/planner_spline.cpp)
-ament_target_dependencies(offboard_control rclcpp px4_msgs geometry_msgs Eigen3 Boost tf2)
+ament_target_dependencies(offboard_control rclcpp px4_msgs geometry_msgs Eigen3 Boost tf2 ompl fcl)
 target_include_directories(offboard_control PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
   ${Eigen3_INCLUDE_DIRS}
 )
-target_link_libraries(offboard_control Eigen3::Eigen ${geometry_msgs_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(offboard_control Eigen3::Eigen ${geometry_msgs_LIBRARIES} ${Boost_LIBRARIES} ompl fcl)
 install(TARGETS offboard_control DESTINATION lib/${PROJECT_NAME})
 
 
@@ -50,7 +55,7 @@ install(TARGETS offboard_control DESTINATION lib/${PROJECT_NAME})
 ############
 
 # Export information to downstream packages
-ament_export_dependencies(ament_cmake rclcpp rosidl_default_runtime eigen3_cmake_module Eigen3 px4_msgs geometry_msgs sensor_msgs)
+ament_export_dependencies(ament_cmake rclcpp rosidl_default_runtime eigen3_cmake_module Eigen3 px4_msgs geometry_msgs sensor_msgs ompl fcl)
 
 ament_export_targets(export_frame_transforms HAS_LIBRARY_TARGET)
 
