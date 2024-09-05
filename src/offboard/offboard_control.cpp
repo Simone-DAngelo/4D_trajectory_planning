@@ -127,6 +127,7 @@ void OffboardControl::key_input() {
 			float alt;
 			std::cout << "Enter altitude: "; 
 			std::cin >> alt;
+			this->arm();
 			takeoffTraj(alt);
 		}
 		else if(cmd == "stop") {
